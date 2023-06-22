@@ -1,7 +1,5 @@
-local color_utils = require('color_factory.color')
-
-local convert = color_utils.convert
-local transform = color_utils.transform
+local convert = require('color-space.utils.convert')
+local transform = require('color-space.utils.transform')
 
 -- stylua: ignore
 
@@ -9,10 +7,10 @@ local transform = color_utils.transform
 --- Each pair of values represents the primary key and its corresponding alias.
 --- @type table
 local color_aliases = {
-	"h", "hue",
-	"s", "saturation",
-	"l", "lightness",
-	"b", "blend",
+  "h", "hue",
+  "s", "saturation",
+  "l", "lightness",
+  "b", "blend",
 }
 
 --- Table defining the base colors.
@@ -22,7 +20,7 @@ local colors = {
 }
 
 --- A mapping table of color modification keys to their corresponding utility functions
-local color_modification_functions = {
+local modification_functions = {
   s = transform.saturate,
   l = transform.lighten,
   b = transform.blend,
@@ -34,17 +32,13 @@ local color_modification_functions = {
 --- @return string: The modified color.
 local function modify(color, modifications)
   for _, modification in ipairs(modifications) do
-    local key = modification[1]
-    local value = modification[2]
-    local modification_function = color_modification_functions[key]
+    local key, value = modification[1], modification[2]
+    local modifier = modification_functions[key]
 
-    if modification_function then
-      if key == 'b' then
-        local hl, amount = modification[3], modification[4]
-        color = modification_function(color, value, hl, amount)
-      else
-        color = modification_function(color, value)
-      end
+    if modifier then
+      local hl, amount = modification[3], modification[4]
+      local modified_color = key == 'b' and modifier(color, value, hl, amount) or modifier(color, value)
+      color = modified_color
     end
   end
 
@@ -96,8 +90,6 @@ local function color(name)
   return setmetatable(color_instance, color_metatable)
 end
 
-return {
-  color = setmetatable({}, {
-    __index = function(_, key) return color(key) end,
-  }),
-}
+return setmetatable({}, {
+  __index = function(_, key) return color(key) end,
+})
