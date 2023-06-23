@@ -15,9 +15,7 @@ local color_aliases = {
 
 --- Table defining the base colors.
 --- @type table
-local colors = {
-  purple = '#4f4f93',
-}
+-- local colors = require('color-space.colorschemes').colorscheme_colors
 
 --- A mapping table of color modification keys to their corresponding utility functions
 local modification_functions = {
@@ -59,9 +57,12 @@ local function color(name)
     __tostring = function(self) return self:hex() end,
   }
 
+  local function get_colors() return require('color-space.colorschemes').colorscheme_colors end
+
   --- Returns the hexadecimal representation of the color instance.
   --- @return string: The hexadecimal color value.
   function color_instance:hex()
+    local colors = get_colors()
     local modified_color = modify(colors[self.name], self.modifications)
     return modified_color
   end
@@ -69,6 +70,7 @@ local function color(name)
   --- Returns the RGB representation of the color instance.
   --- @return number, number, number: The red, green, and blue values respectively.
   function color_instance:rgb()
+    local colors = get_colors()
     local modified_color = modify(colors[self.name], self.modifications)
     return convert.hexToRGB(modified_color)
   end
