@@ -7,7 +7,7 @@ colorschemes.setup = function()
   local default_highlights = require('color-space.highlights.defaults')
 
   local inherit_colors = {
-    background = helpers.get_hl('Normal', 'bg', '#111111'),
+    background = helpers.get_hl('Normal', 'bg', '#000000'),
     foreground = helpers.get_hl('Normal', 'fg', '#ffffff'),
   }
 

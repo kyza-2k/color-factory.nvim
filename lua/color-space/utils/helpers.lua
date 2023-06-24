@@ -16,6 +16,7 @@ local err_warn = vim.schedule_wrap(
 )
 
 --- Get the value of a highlight group while handling errors and fallbacks.
+---
 --- If no attribute is specified, return the entire highlight table.
 --- @param group string
 --- @param attribute string?

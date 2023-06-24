@@ -1,4 +1,15 @@
+local default_configuration = {
+  options = {
+    default_highlights = true,
+  },
+}
+
 return {
-  setup = function(opts) print(opts.enable_by_default) end,
   colors = require('color-space.colors'),
+
+  setup = function(configuration)
+    configuration = configuration or default_configuration
+
+    return configuration
+  end,
 }

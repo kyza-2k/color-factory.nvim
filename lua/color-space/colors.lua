@@ -5,6 +5,7 @@ local transform = require('color-space.utils.transform')
 
 --- Table defining the aliases for color modifications.
 --- Each pair of values represents the primary key and its corresponding alias.
+---
 --- @type table
 local color_aliases = {
   "h", "hue",
@@ -13,53 +14,54 @@ local color_aliases = {
   "b", "blend",
 }
 
---- Table defining the base colors.
---- @type table
--- local colors = require('color-space.colorschemes').colorscheme_colors
-
 --- A mapping table of color modification keys to their corresponding utility functions
 local modification_functions = {
+  h = transform.hue,
   s = transform.saturate,
   l = transform.lighten,
   b = transform.blend,
 }
 
 --- Applies color modifications to a color
+---
 --- @param color string: The base color.
---- @param modifications table: A table of modifications to apply to the color.
+--- @param parameters table: A list of parameters passed to the modifier
 --- @return string: The modified color.
-local function modify(color, modifications)
-  for _, modification in ipairs(modifications) do
-    local key, value = modification[1], modification[2]
-    local modifier = modification_functions[key]
+local function modify(color, parameters)
+  for _, modification in ipairs(parameters) do
+    local key, value, blend_hl, blend_value = modification[1], modification[2], modification[3], modification[4]
+    local modifier_type = key == 'b' and { color, value, blend_hl, blend_value } or { color, value }
 
-    if modifier then
-      local hl, amount = modification[3], modification[4]
-      local modified_color = key == 'b' and modifier(color, value, hl, amount) or modifier(color, value)
-      color = modified_color
-    end
+    local modifier_function = modification_functions[key]
+    local modified_color = modifier_function(table.unpack(modifier_type))
+
+    color = modified_color
   end
 
   return color
 end
 
 --- Creates a color instance with the given name.
+---
 --- @param name function: The name of the color.
 --- @return table: The color instance.
 local function color(name)
   local color_instance = { name = name, modifications = {} }
 
+  local function get_colors() return require('color-space.colorschemes').colorscheme_colors end
+
   local color_metatable = {
     __index = color_instance,
 
     --- Returns the hexadecimal representation of the color instance.
+    --
+    --- @param self table: The color instance.
     --- @return string: The hexadecimal color value.
     __tostring = function(self) return self:hex() end,
   }
 
-  local function get_colors() return require('color-space.colorschemes').colorscheme_colors end
-
   --- Returns the hexadecimal representation of the color instance.
+  ---
   --- @return string: The hexadecimal color value.
   function color_instance:hex()
     local colors = get_colors()
@@ -68,6 +70,7 @@ local function color(name)
   end
 
   --- Returns the RGB representation of the color instance.
+  ---
   --- @return number, number, number: The red, green, and blue values respectively.
   function color_instance:rgb()
     local colors = get_colors()
@@ -79,10 +82,11 @@ local function color(name)
     local key, alias_key = color_aliases[i], color_aliases[i + 1]
 
     --- Modifies the color instance with the specified value for the given key.
+    ---
     --- @param value any: The value to set for the key.
     --- @return table: The modified color instance.
     color_instance[key] = function(self, value, ...)
-      table.insert(self.modifications, { key, value, unpack({ ... }) })
+      table.insert(self.modifications, { key, value, table.unpack({ ... }) })
       return self
     end
 

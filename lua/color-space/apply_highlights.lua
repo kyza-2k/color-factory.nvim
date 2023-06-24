@@ -1,5 +1,7 @@
 return function(highlights)
+
   -- stylua: ignore
+
   local keys = {
     "fg", "bg", "sp", "blend", "bold", "standout",
     "underline", "undercurl", "underdouble", "underdotted",
@@ -19,8 +21,7 @@ return function(highlights)
     local success, error = pcall(function() vim.api.nvim_set_hl(0, group, attrs) end)
 
     if not success then
-      -- Log the error for debugging purposes
-      print("harmony.nvim: Error setting highlight group '" .. group .. "': " .. error)
+      print("color-space.nvim: Error setting highlight group '" .. group .. "': " .. error)
       return
     end
   end
