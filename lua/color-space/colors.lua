@@ -69,15 +69,6 @@ local function color(name)
     return modified_color
   end
 
-  --- Returns the RGB representation of the color instance.
-  ---
-  --- @return number, number, number: The red, green, and blue values respectively.
-  function color_instance:rgb()
-    local colors = get_colors()
-    local modified_color = modify(colors[self.name], self.modifications)
-    return convert.hexToRGB(modified_color)
-  end
-
   for i = 1, #color_aliases, 2 do
     local key, alias_key = color_aliases[i], color_aliases[i + 1]
 

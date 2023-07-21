@@ -5,16 +5,6 @@ helpers.extend = function(method, t1, t2) return vim.tbl_deep_extend(method, {},
 -- Credit to: https://github.com/akinsho
 -- Found at: https://github.com/akinsho/dotfiles/blob/main/.config/nvim/lua/as/highlights.lua
 
-local err_warn = vim.schedule_wrap(
-  function(group, attribute)
-    vim.notify(
-      string.format('failed to get highlight %s for attribute %s\n%s', group, attribute, debug.traceback()),
-      'ERROR',
-      { title = string.format('Highlight - get(%s)', group) }
-    )
-  end
-)
-
 --- Get the value of a highlight group while handling errors and fallbacks.
 ---
 --- If no attribute is specified, return the entire highlight table.

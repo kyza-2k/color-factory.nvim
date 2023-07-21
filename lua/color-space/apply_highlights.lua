@@ -1,11 +1,10 @@
 return function(highlights)
-
   -- stylua: ignore
 
   local keys = {
     "fg", "bg", "sp", "blend", "bold", "standout",
     "underline", "undercurl", "underdouble", "underdotted",
-    "strikethrough", "italic", "reverse", "nocombine",
+    "strikethrough", "italic", "nocombine",
     "cterm", "ctermfg", "ctermbg", "default", "link",
   }
 
